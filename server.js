@@ -1,15 +1,19 @@
+const config = require('./config');
+
+
 const express = require('express');
-const cors = require('cors')
+const bodyParser = require("body-parser");
+const cors = require('cors');
+
 const app = express();
-
 app.use(cors());
+app.use(bodyParser.json());
 
-app.use('/login', (req, res) => {
-  const y= []
-  res.send({
-    token: 'test123'
+//redis client setup
+const redis = require("redis");
+const redisClient = redis.createClient({
+    host: config.redisHost,
+    port: config.redisPort,
+    retry_strategy: () => 1000,
   });
-});
-app.listen(8082, () => console.log('API is running on http://localhost:8083/login'));
-
-/*git commit */
+  const redisPublisher = redisClient.duplicate();
